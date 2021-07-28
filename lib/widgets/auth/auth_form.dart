@@ -21,6 +21,7 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
+
   var _isLogin = true;
   var _userEmail = '';
   var _userName = '';
