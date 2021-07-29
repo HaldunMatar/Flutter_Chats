@@ -1,12 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble(
-    this.message,
-    this.isMe,
-  );
+  MessageBubble(this.message, this.userName, this.isMe, {required this.key});
 
+  final Key key;
   final String message;
+  final String userName;
   final bool isMe;
 
   @override
@@ -16,7 +16,8 @@ class MessageBubble extends StatelessWidget {
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-            color: isMe ? Colors.grey[300] : Theme.of(context).accentColor,
+            color: isMe ? Colors.grey[300] : Colors.grey[500],
+            //  : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
               topRight: Radius.circular(12),
@@ -24,7 +25,7 @@ class MessageBubble extends StatelessWidget {
               bottomRight: isMe ? Radius.circular(0) : Radius.circular(12),
             ),
           ),
-          width: 180,
+          width: 140,
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 16,
@@ -33,11 +34,29 @@ class MessageBubble extends StatelessWidget {
             vertical: 4,
             horizontal: 8,
           ),
-          child: Text(
-            message,
-            style: TextStyle(
-              color: isMe ? Colors.black : Theme.of(context).accentColor,
-            ),
+          child: Column(
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                userName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isMe
+                      ? Colors.black
+                      : Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              Text(
+                message,
+                style: TextStyle(
+                  color: isMe
+                      ? Colors.black
+                      : Theme.of(context).colorScheme.primary,
+                ),
+                textAlign: isMe ? TextAlign.end : TextAlign.start,
+              ),
+            ],
           ),
         ),
       ],
