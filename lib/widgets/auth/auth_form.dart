@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chat_app/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -11,6 +14,7 @@ class AuthForm extends StatefulWidget {
     String email,
     String password,
     String userName,
+    File image,
     bool isLogin,
     BuildContext ctx,
   ) submitFn;
@@ -21,20 +25,44 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
-
   var _isLogin = true;
   var _userEmail = '';
   var _userName = '';
   var _userPassword = '';
+  File _userImageFile = File(
+      "_userImageFilehttps://firebasestorage.googleapis.com/v0/b/flutter-chat-5fc20.appspot.com/o/user_image%2FQwh1hZiJylYugJ7eycNxiLwEYPV2.jpg?alt=media&token=873d740c-7244-4c0a-8c43-4fb59925aa88");
+
+  void _pickedImage(File image) {
+    /* _userImageFile = File(
+        "_userImageFilehttps://firebasestorage.googleapis.com/v0/b/flutter-chat-5fc20.appspot.com/o/user_image%2FQwh1hZiJylYugJ7eycNxiLwEYPV2.jpg?alt=media&token=873d740c-7244-4c0a-8c43-4fb59925aa88");*/
+
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
+    if (_userImageFile == null && !_isLogin) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please pick an image.'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      return;
+    }
+
     if (isValid) {
       _formKey.currentState!.save();
-      widget.submitFn(_userEmail.trim(), _userPassword.trim(), _userName.trim(),
-          _isLogin, context);
+      widget.submitFn(
+        _userEmail.trim(),
+        _userPassword.trim(),
+        _userName.trim(),
+        _userImageFile,
+        _isLogin,
+        context,
+      );
     }
   }
 
@@ -51,6 +79,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  if (!_isLogin) UserImagePicker(_pickedImage),
                   TextFormField(
                     key: ValueKey('email'),
                     validator: (value) {
